@@ -1,0 +1,16 @@
+# Logs (may contain command output / sensitive paths)
+logs/
+*.log
+
+# Secrets — never commit these
+.env
+*.key
+*_key
+*.pem
+config/argo_proxy.local.yaml
+
+# OS / editor cruft
+.DS_Store
+*.swp
+.idea/
+.vscode/
