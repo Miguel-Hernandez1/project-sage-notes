@@ -1,4 +1,4 @@
-# sage-edge-ai-internship
+# Research Internship @ Argonne National Laboratory Notes
 
 Personal notes and setup guides from my summer internship at Argonne National Laboratory, working with the Sage / Waggle edge-AI stack. This isn't the internship project itself, just a place to keep track of things I set up and figured out along the way so I can reference them later.
 
