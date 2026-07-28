@@ -3,8 +3,8 @@
 Compiled for the BirdNET plugin's privacy-redaction path, where the cost
 asymmetry is reversed from telephony: under-redacting (leaking speech) is
 catastrophic, over-redacting (extra silence around an utterance) is cheap.
-All numbers below are traced to primary or production sources that I actually
-fetched and read during this session; "value [source]" throughout.
+All numbers below are traced to primary or production sources that were
+fetched and read directly; "value [source]" throughout.
 
 ---
 
@@ -104,7 +104,7 @@ I fetched the 3GPP TS 26.094 "Mandatory speech codec; AMR speech codec; Voice Ac
 
 ### Numeric values caveat
 
-The spec text names the constants (`HANG_LEN_HIGH_NOISE`, `HANG_LEN_LOW_NOISE`, `BURST_LEN_HIGH_NOISE`, `BURST_LEN_LOW_NOISE`, `CVAD_HANG_LENGTH`, `HANG_NOISE_THR`) but the **numeric values are in the fixed-point C reference code (`amr-nb-vad/3}, not the prose**). I did NOT fetch and read that reference code this session, so I'm only reporting the *mechanism and the 2 s complex-hangover figure verbatim from the spec text*. For the exact frame counts you'd need to pull the AMR reference implementation (3GPP FT ZIP or a vendor drop). From prior art the low-noise track uses small hangover (a handful of frames) and the high-noise track longer — but treat any specific frame count you find elsewhere as "reference-impl, not spec," and re-verify if you cite it.
+The spec text names the constants (`HANG_LEN_HIGH_NOISE`, `HANG_LEN_LOW_NOISE`, `BURST_LEN_HIGH_NOISE`, `BURST_LEN_LOW_NOISE`, `CVAD_HANG_LENGTH`, `HANG_NOISE_THR`) but the **numeric values live in the fixed-point C reference code, not the prose**. That reference code was not fetched for these notes, so only the *mechanism and the 2 s complex-hangover figure, verbatim from the spec text*, are reported here. Exact frame counts would require the AMR reference implementation (3GPP FTP ZIP or a vendor drop). From prior art the low-noise track uses a small hangover (a handful of frames) and the high-noise track a longer one — but any specific frame count found elsewhere is "reference-impl, not spec," and needs re-verification before citing.
 
 **Tuned for:** cellular DTX on circuit-switched AMR — cut transmit power during silence to save battery and RF capacity, without clipping the low-energy tails of speech that carry intelligibility. The 2-s complex-hangover shows the same design reflex in the extreme: when the detector might be wrong, *keep transmitting*. That is the opposite of the privacy-redaction reflex.
 
@@ -115,7 +115,7 @@ Status: the ITU-T recommendation page (`itu.int/itu-t/recommendations/rec.aspx?r
 What I *can* say without re-fetching: G.729 Annex B is the silence-compression scheme paired with the G.729 CS-ACELP codec at 8 kb/s; its VAD adds a multi-frame hangover before declaring non-speech and hands off to Annex B's comfort-noise generator (SID frames). The canonical cite is:
   Benyassine, Shlomot, Su, Massaloux, Lamblin, Petit, "ITU-T Recommendation G.729 Annex B: a silence compression scheme for use with G.729 optimized for V.70 digital simultaneous voice and data applications," IEEE Trans. Speech Audio Proc., Sep 1997. (Listed in the Wikipedia VAD references; I confirmed the citation exists there but did not pull the IEEE paper.)
 
-If you want the exact hangover frame counts for G.729 Annex B, I'd need to either fetch the ETSI/ITU PDF from a working URL, or pull the reference C — say the word and I'll retry with a different retrieval path.
+Getting the exact G.729 Annex B hangover frame counts would require the ITU/ETSI PDF via a working URL, or the reference C implementation.
 
 ---
 
@@ -137,17 +137,15 @@ This is strictly a starting point; it should be tuned by running captured node a
 
 ---
 
-## Primary sources I actually fetched and read this session
+## Primary sources fetched and read directly
 
 1. **WebRTC VAD C source** — `webrtcvad` 2.0.10 PyPI wheel, `cbits/webrtc/common_audio/vad/vad_core.c` and `webrtc_vad.c`. Constants verbatim above.
 2. **3GPP TS 26.094 v15.0.0** — "AMR speech codec; Voice Activity Detector (VAD)", spec .doc fetched from `3gpp.org/ftp/Specs/archive/26_series/26.094/26094-h00.zip`, text extracted. Hangover mechanism and 2 s complex-hangover figure verbatim from clause 3.3.5.
 3. **NVIDIA Riva ASR customization page** — `docs.nvidia.com/nim/speech/latest/asr/customization/customization.html` (live, fetched 2026-07-23). Silero VAD `pad_offset`/`pad_onset`/`min_duration_off` defaults and the ≥560 ms endpointing recommendation, verbatim from the parameter table.
 4. **Wikipedia "Voice activity detection"** — fetched for cross-references (Beritelli 2002 G.729/AMR/fuzzy VAD comparison; Benyassine 1997 G.729 Annex B cite; WebRTC section). Not a primary source, used only to confirm citations.
 
-## What I could NOT fetch this session (flagged honestly)
+## Not verified against primary sources
 
 - **ITU-T G.729 Annex B primary text** — the ITU rec viewer is JS-rendered; the dologin_pub PDF URL returned Document Not Found. The Benyassine 1997 IEEE paper is behind a paywall. The spec's exact numeric hangover frame counts are therefore not in my collected material — only the mechanism (multi-frame post-speech hangover → SID/CNG handoff).
 - **3GPP AMR VAD numeric constant values** (`HANG_LEN_*`, `BURST_LEN_*`, `CVAD_HANG_LENGTH`) — the spec names them; the values live in the fixed-point C reference (`amrnb_vad.c` / 3GPP reference code), which I did not download. I report the **2 s complex-hangover as a duration** because the spec states it in prose; I do not report the per-track frame counts for the noise-level hangover because I have not verified them in source this session.
-- **arXiv VAD-hangover survey papers** — I tried several arxiv IDs and the arXiv API; none of my URL guesses matched VAD literature (they returned unrelated papers in solar physics / geometry). If you have a specific arxiv ID or author (Sohn 1999 ETSI VAD, Makhoul 1998, Mozes 1990), pass it and I'll fetch.
-
-If you want me to close any of these gaps, tell me which one and I'll chase the working retrieval path.
+- **arXiv VAD-hangover survey papers** — arXiv searches did not surface the VAD-hangover literature. Candidate leads to chase with proper citations: Sohn 1999 (statistical VAD), the ETSI/AMR VAD comparison papers (Beritelli 2002).

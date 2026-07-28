@@ -194,7 +194,7 @@ are low energy and can precede the triggering frame, and speaker identity is
 recoverable from very little audio. Telephony VAD hangover is typically
 200-500ms but that is tuned for not clipping a call, a much lower-stakes goal.
 Worth grounding in VAD hangover literature rather than intuition.
-*Answered: sourced numbers now in [VAD-HANGOVER-RESEARCH.md](VAD-HANGOVER-RESEARCH.md)
+*Answered: sourced numbers now in [05-vad-hangover-research.md](05-vad-hangover-research.md)
 (WebRTC, Silero/Riva, 3GPP AMR); recommended post-utterance guard ~1s.*
 
 ---
