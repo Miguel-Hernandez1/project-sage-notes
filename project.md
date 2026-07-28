@@ -40,7 +40,9 @@ would require piping ffmpeg to stdout to decode in-process.
 The safe default state of the system is **redacting**. Successful speech
 classification is what *permits* recording, not what triggers redaction. If
 the classifier fails or returns nothing, the system redacts rather than
-publishes. This is the "fail closed" principle, and it is enforced in the code.
+publishes. The pipeline is designed to fail closed: the gate raises on missing
+scores rather than silently redacting nothing, and pipeline-level enforcement
+lands with the `app.py` integration.
 
 ## What I built
 
