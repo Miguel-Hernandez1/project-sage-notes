@@ -15,8 +15,8 @@ CORE_SPEECH = (
     65,  # Hubbub, speech noise, speech babble
 )
 
-# index 247 ("Music for children") omitted here - it does not match any
-# speech-related class in yamnet_class_map.csv, see conversation with Miguel
+# index 247 is "Music for children" in yamnet_class_map.csv - a music genre,
+# not a speech class, so it is deliberately excluded
 AMBIGUOUS = (
     29,  # Child singing
     63,  # Chatter
