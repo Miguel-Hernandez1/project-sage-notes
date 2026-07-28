@@ -140,8 +140,9 @@ mic capture (in-memory array)
 
 - Wire the redaction modules into the microphone path in `app.py` (insertion
   point mapped: between the in-memory array and the save call).
-- RTSP/audio bring-up with the Reolink camera: confirm the camera exposes
-  audio, and test whether ffmpeg can pipe it without writing to disk.
+- Camera-path no-disk pipe: RTSP audio from the Reolink is confirmed (AAC
+  16kHz mono, verified live); the remaining open item is piping ffmpeg to
+  stdout so camera audio can be decoded in-process without touching disk.
 - Tune enter/exit thresholds against real recorded speech at varying distance
   and volume, plotting recall vs threshold to hit a target recall (99%+) and
   reporting the precision cost.
