@@ -7,6 +7,8 @@ class RedactionGateFailure(Exception):
 
 
 class RedactionGate:
+    # These defaults predate docs/05-vad-hangover-research.md; aligning the
+    # post-utterance guard toward the ~1.05s it recommends is a pending tune.
     def __init__(
         self,
         enter_threshold: float = 0.25,
