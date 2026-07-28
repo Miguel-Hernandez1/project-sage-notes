@@ -121,8 +121,8 @@ non-stationary.
 
 Rather than filling redacted spans with comfort noise (which would corrupt
 the bioacoustic record BirdNET and downstream soundscape analysis depend on),
-the plan is to write silence plus publish a separate `audio.redacted`
-measurement with timestamp and duration. This makes each redaction auditable,
+the proposal — pending sign-off from Pete — is to write silence plus publish a
+separate `audio.redacted` measurement with timestamp and duration. This makes each redaction auditable,
 distinguishable from a dead sensor, and gives NPS a verifiable log — while
 also yielding free statistics on human presence at the site.
 

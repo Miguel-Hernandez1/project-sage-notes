@@ -162,8 +162,8 @@ is fragile at 0.48s hops.
 **What gets written during a redaction.** Options are silence, comfort noise
 matched to background level, or band-limited masking.
 
-Leaning toward silence in the audio plus a separate published measurement
-(timestamp + duration) marking the redaction. Reasoning:
+Proposed (pending sign-off from Pete): silence in the audio plus a separate
+published measurement (timestamp + duration) marking the redaction. Reasoning:
 
 - The downstream consumer is BirdNET, not a human listener. Synthetic noise
   invites spurious detections.
