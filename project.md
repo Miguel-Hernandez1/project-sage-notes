@@ -81,6 +81,8 @@ against real speech audio, end to end:
   standalone module is not available on this node, so the deployed front end
   uses the LiteRT/TFLite path. The `RedactionGate` and `speech_classes`
   modules are used unchanged; only the YAMNet front end is swapped to LiteRT.
+  The LiteRT adapter and the validation harness live in the birdnet fork
+  (hermes-mighdz/birdnet); upstreaming a copy of the adapter here is pending.
 - On a ~21s real speech clip (three spoken bursts with silence between),
   YAMNet's per-frame speech scores sat at the noise floor (~0.01) during
   silence and saturated near 0.99 during speech — clean discrimination.
