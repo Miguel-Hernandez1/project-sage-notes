@@ -194,6 +194,8 @@ are low energy and can precede the triggering frame, and speaker identity is
 recoverable from very little audio. Telephony VAD hangover is typically
 200-500ms but that is tuned for not clipping a call, a much lower-stakes goal.
 Worth grounding in VAD hangover literature rather than intuition.
+*Answered: sourced numbers now in [VAD-HANGOVER-RESEARCH.md](VAD-HANGOVER-RESEARCH.md)
+(WebRTC, Silero/Riva, 3GPP AMR); recommended post-utterance guard ~1s.*
 
 ---
 
@@ -207,8 +209,9 @@ Worth grounding in VAD hangover literature rather than intuition.
   is actually PoE.** Much of that product line is not, despite the name. If not,
   use a PoE injector or the camera's 12V adapter.
 
-Unverified: whether the RLC-81MA exposes audio over RTSP, or only through the
-Reolink app's two-way audio. These are not the same thing. Check with:
+*Answered: the RLC-81MA does expose audio over RTSP — AAC 16kHz mono,
+confirmed by live capture (see project.md, "verified on hardware").* The
+original check, kept for reference:
 
 ```bash
 ffprobe rtsp://<user>:<pass>@<CAMERA_IP>:554/h264Preview_01_main
@@ -234,12 +237,14 @@ Sample rate note: YAMNet wants 16 kHz mono, BirdNET wants 48 kHz. Capture at
 ## 6. Next steps
 
 - [ ] Verify NETGEAR switch is PoE
-- [ ] Confirm RTSP audio stream exists on the RLC-81MA
+- [x] Confirm RTSP audio stream exists on the RLC-81MA — confirmed, AAC 16kHz
+      mono (project.md)
 - [ ] Test ffmpeg stdout piping for a no-disk camera path
 - [ ] Confirm BirdNET's `run_arrays` API in-container (documented in
       RESEARCH.md:91-101 but not verifiable on the dev host, where birdnet
       is not installed)
-- [ ] Wire YAMNet, verifying speech class indices against the class map CSV
+- [x] Wire YAMNet, verifying speech class indices against the class map CSV —
+      done: `code/redaction/speech_classes.py` + `yamnet_speech.py`
 - [ ] Record test clips at varying distance and volume against realistic
       ambient noise, then tune thresholds against that corpus
 - [ ] Plot recall vs threshold, pick for target recall, report precision cost
