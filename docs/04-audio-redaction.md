@@ -205,8 +205,8 @@ Worth grounding in VAD hangover literature rather than intuition.
   a 12V DC port. Audio and video on one device means one clock, which matters
   for the audio-to-video sync problem (detect a sound event at t=11s, retrieve
   the video around it).
-- NETGEAR 8-port gigabit smart managed plus switch. **Verify whether this model
-  is actually PoE.** Much of that product line is not, despite the name. If not,
+- NETGEAR gigabit smart managed plus switch. **Verify port count and whether
+  this model is actually PoE.** Much of that product line is not, despite the name. If not,
   use a PoE injector or the camera's 12V adapter.
 
 *Answered: the RLC-81MA does expose audio over RTSP — AAC 16kHz mono,

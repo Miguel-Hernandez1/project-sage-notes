@@ -14,3 +14,4 @@ config/argo_proxy.local.yaml
 *.swp
 .idea/
 .vscode/
+session-*.jsonl
