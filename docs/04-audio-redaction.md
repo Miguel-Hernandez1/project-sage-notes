@@ -120,9 +120,13 @@ below the 0.5+ you would use for a confident bird ID. To be tuned empirically
 against real clips.
 
 Do not threshold on YAMNet's single "Speech" class. Take the max across the
-AudioSet speech family (Speech, Conversation, Male speech, Female speech,
-Child speech, Narration, Shout, Yell, Screaming, Whispering, Babbling). Distant
-or mumbled speech may score low on Speech alone while lighting up neighbors.
+AudioSet speech family; the verified index list lives in
+`code/redaction/speech_classes.py`, checked against `yamnet_class_map.csv`
+(Speech, Child speech, Conversation, Narration, Babbling, Speech synthesizer,
+Shout, Yell, Children shouting, Screaming, Whispering, Hubbub). Distant or
+mumbled speech may score low on Speech alone while lighting up neighbors.
+Note: "Male speech" and "Female speech" are **not** YAMNet classes, despite
+turning up in AudioSet-adjacent lists.
 
 Verify class indices against the actual `yamnet_class_map.csv` rather than
 trusting any list from memory or from an LLM.
