@@ -9,8 +9,8 @@ Personal notes and setup guides from my summer internship at Argonne National La
 | [01 - sage-agent on local Ollama](docs/01-sage-agent-ollama.md) | Switching the sage-agent LLM backend from a cloud API to a local Ollama model. |
 | [02 - tmux with persistent logging](docs/02-tmux-logging.md) | Keeping remote sessions alive across disconnects and saving terminal history to disk. |
 | [03 - Hermes Agent on a Thor node](docs/03-hermes-on-thor.md) | Installing Hermes Agent on a Sage Thor node wired to local Ollama, plus notes on a couple of issues I ran into. |
-| 04 - Audio privacy redaction | Pipeline analysis and RedactionGate design for the Haleakala speech-redaction project. |
-| 05 - VAD hangover research | Sourced timing ranges (WebRTC, Riva/Silero, 3GPP AMR) grounding the redaction padding choices. |
+| [04 - Audio privacy redaction](docs/04-audio-redaction.md) | Pipeline analysis and RedactionGate design for the Haleakalā speech-redaction project. |
+| [05 - VAD hangover research](docs/05-vad-hangover-research.md) | Sourced timing ranges (WebRTC, Riva/Silero, 3GPP AMR) grounding the redaction padding choices. |
 
 ## Context
 
