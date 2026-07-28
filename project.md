@@ -71,23 +71,39 @@ frame through `speech_classes`. Model load is lazy and cached.
 
 ## What has been verified on hardware (Jetson AGX Thor, aarch64)
 
-The speech-detection inference has been run on the Thor node itself:
+The full detection-and-redaction pipeline has been run on the Thor node
+against real speech audio, end to end:
 
-- YAMNet's SavedModel loads and converts to TFLite on the Thor.
-- The TFLite model runs via `ai_edge_litert` on the ARM cores with the
-  XNNPACK CPU delegate — no GPU needed.
-- Sanity check passes: on silence, YAMNet correctly reports class 494
-  "Silence" at 1.0 and class 0 "Speech" at 0.0.
-- 3 seconds of audio produces 6 frames, matching the expected 0.48s hop.
+- YAMNet runs on the Thor via `ai_edge_litert` (LiteRT) using a TFLite model
+  converted on the node. Note: the `tensorflow_hub` load path used in the
+  standalone module is not available on this node, so the deployed front end
+  uses the LiteRT/TFLite path. The `RedactionGate` and `speech_classes`
+  modules are used unchanged; only the YAMNet front end is swapped to LiteRT.
+- On a ~21s real speech clip (three spoken bursts with silence between),
+  YAMNet's per-frame speech scores sat at the noise floor (~0.01) during
+  silence and saturated near 0.99 during speech — clean discrimination.
+- `RedactionGate` consumed those scores and produced two redaction windows
+  that correctly bracketed the speech, with the configured 1.5s pre-roll
+  reaching backward from speech onset and 0.75s post-roll/hangover reaching
+  forward past the last speech frame. A short mid-speech pause was absorbed by
+  the hangover (windows merged); a longer silence correctly split the windows.
+- Earlier in the same session, a live RTSP capture from a networked Reolink
+  camera confirmed the camera exposes an AAC 16kHz mono audio stream — exactly
+  YAMNet's native input rate, so no resampling is needed for that source. A
+  first capture with no speaker present correctly produced zero redaction
+  windows (no false positives on ambient audio).
 
-This answers a key open question — whether the speech detector can run on the
-target hardware — with a demonstrated yes.
+Together these confirm the runtime half of the design: the speech detector
+runs on the target hardware, and the redaction gate fires correctly on real
+speech and stays quiet on real non-speech.
 
-**Not yet tested:** live audio capture from the camera or microphone. No real
-hardware audio has been captured or run through the pipeline end-to-end yet;
-the modules above have been validated with unit tests and synthetic input, and
-YAMNet inference has been validated on the node. Live capture and
-threshold tuning against real audio are the immediate next steps below.
+**Not yet done:** the in-memory, never-persists integration into `app.py`.
+The tests above read audio from a file as a test harness. The production
+requirement — that the raw array is redacted *before* it is written to disk —
+is mapped (insertion point identified between capture and save on the mic
+path) but not yet wired into the application. Threshold tuning against speech
+at varying distance and volume is also still ahead. These are the immediate
+next steps below.
 
 ## Grounded parameter choices
 
