@@ -101,13 +101,16 @@ Together these confirm the runtime half of the design: the speech detector
 runs on the target hardware, and the redaction gate fires correctly on real
 speech and stays quiet on real non-speech.
 
-**Not yet done:** the in-memory, never-persists integration into `app.py`.
-The tests above read audio from a file as a test harness. The production
-requirement — that the raw array is redacted *before* it is written to disk —
-is mapped (insertion point identified between capture and save on the mic
-path) but not yet wired into the application. Threshold tuning against speech
-at varying distance and volume is also still ahead. These are the immediate
-next steps below.
+**Mic-path integration: done.** The in-memory, never-persists integration is
+now landed on the birdnet fork (hermes-mighdz/birdnet): `redact_speech` is
+wired into `record_from_microphone` so the raw array is redacted before the
+save call, failing closed if scoring is unavailable. 43 tests pass on the
+fork, and a before/after demo (raw vs redacted output on the same speech
+clip) was produced.
+
+**Not yet done:** the camera-path no-disk pipe, a live end-to-end run on the
+node with a real microphone, and threshold tuning against speech at varying
+distance and volume. These are the next steps below.
 
 ## Grounded parameter choices
 
@@ -142,8 +145,8 @@ mic capture (in-memory array)
 
 ## Next steps
 
-- Wire the redaction modules into the microphone path in `app.py` (insertion
-  point mapped: between the in-memory array and the save call).
+- Live end-to-end run on the node: the mic-path integration landed on the
+  fork; exercise it against a real microphone capture on the Thor.
 - Camera-path no-disk pipe: RTSP audio from the Reolink is confirmed (AAC
   16kHz mono, verified live); the remaining open item is piping ffmpeg to
   stdout so camera audio can be decoded in-process without touching disk.
