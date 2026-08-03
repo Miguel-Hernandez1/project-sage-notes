@@ -83,6 +83,9 @@ against real speech audio, end to end:
   modules are used unchanged; only the YAMNet front end is swapped to LiteRT.
   The LiteRT adapter and the validation harness live in the birdnet fork
   (hermes-mighdz/birdnet); upstreaming a copy of the adapter here is pending.
+- The converted YAMNet `.tflite` now lives in a persistent location on the
+  node (`~/AI-Projects/models/`) so it survives reboots; the path is picked
+  up via an env var documented on the fork.
 - On a ~21s real speech clip (three spoken bursts with silence between),
   YAMNet's per-frame speech scores sat at the noise floor (~0.01) during
   silence and saturated near 0.99 during speech — clean discrimination.
@@ -108,9 +111,25 @@ save call, failing closed if scoring is unavailable. 43 tests pass on the
 fork, and a before/after demo (raw vs redacted output on the same speech
 clip) was produced.
 
-**Not yet done:** the camera-path no-disk pipe, a live end-to-end run on the
-node with a real microphone, and threshold tuning against speech at varying
-distance and volume. These are the next steps below.
+**Threshold tuning: harness built and verified; real tuning pending better
+data.** A sweep harness (`redaction/scripts/tune_thresholds.py` on the fork's
+`redaction-mic-integration` branch) sweeps `enter_threshold` and reports
+recall vs false-positive rate on labeled clips. It runs correctly on real
+audio, but has only been exercised on a 3-clip labeled set so far — too
+cleanly separable to pick an operating point from. A richer labeled set
+spanning borderline cases (distant or mumbled speech, ambient sounds that
+trip YAMNet's speech classes) is needed before it yields a real tuned
+threshold.
+
+**Camera path: design proposal, not built.** `redaction/CAMERA-PATH-DESIGN.md`
+on the fork proposes extending redaction to the camera path via an ffmpeg
+stdout-pipe (so raw audio never touches disk), plus the audio/video
+time-windowing idea (detect an audio event at time t, snip the video around
+it). None of it is implemented yet.
+
+**Not yet done:** the camera-path implementation, a live end-to-end run on the
+node with a real microphone, and threshold tuning on a representative labeled
+set. These are the next steps below.
 
 ## Grounded parameter choices
 
@@ -148,11 +167,12 @@ mic capture (in-memory array)
 - Live end-to-end run on the node: the mic-path integration landed on the
   fork; exercise it against a real microphone capture on the Thor.
 - Camera-path no-disk pipe: RTSP audio from the Reolink is confirmed (AAC
-  16kHz mono, verified live); the remaining open item is piping ffmpeg to
-  stdout so camera audio can be decoded in-process without touching disk.
-- Tune enter/exit thresholds against real recorded speech at varying distance
-  and volume, plotting recall vs threshold to hit a target recall (99%+) and
-  reporting the precision cost.
+  16kHz mono, verified live) and a design proposal is written
+  (`redaction/CAMERA-PATH-DESIGN.md` on the fork); implementing the ffmpeg
+  stdout-pipe decode is the open item.
+- Build a richer labeled clip set (distant/mumbled speech, YAMNet-confusable
+  ambient) and run `tune_thresholds.py` over it to pick an operating point:
+  target recall 99%+, report the precision cost.
 - Define the `audio.redacted` measurement schema for Beehive.
 
 ## Repositories
