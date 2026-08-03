@@ -1,11 +1,9 @@
 # Speech redaction, explained simply
 
-My plain-English notes on the redaction system, written so I can re-learn
+My notes on the redaction system, written so I can re-learn
 this later or walk someone through it without opening the dense technical
 docs. The precise versions live on the birdnet fork
-(`REDACTION-SYSTEM-OVERVIEW.md`, `REDACTION-INTEGRATION-NOTES.md`) — this is
-the "explain it to me like I'm catching up" layer, with a timeline at the
-end that maps to the actual commits.
+(`REDACTION-SYSTEM-OVERVIEW.md`, `REDACTION-INTEGRATION-NOTES.md`)
 
 ## The problem in one paragraph
 
