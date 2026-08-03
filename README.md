@@ -16,6 +16,7 @@ Notes, setup guides, and project work from my summer internship at Argonne Natio
 | [04 - Audio privacy redaction](docs/04-audio-redaction.md) | Working notes for the redaction project: pipeline persistence analysis, RedactionGate design, open questions, hardware. |
 | [05 - VAD hangover research](docs/05-vad-hangover-research.md) | Sourced post-speech padding numbers from WebRTC VAD, Silero/Riva, and 3GPP AMR, mapped onto the privacy-redaction cost model. |
 | [06 - Agent handoff: birdnet fork](docs/06-agent-handoff-birdnet-fork.md) | Orientation for a future agent: two-repo split, real-vs-proposed status, invariants, model paths, known inconsistencies. |
+| [07 - Speech redaction, explained simply](docs/07-redaction-explained.md) | Plain-English walkthrough of the redaction system with a commit-mapped timeline — for re-learning or showing others. |
 
 ## Context
 
