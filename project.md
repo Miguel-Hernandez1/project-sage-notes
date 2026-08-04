@@ -16,12 +16,14 @@ turn the microphone off.
 
 Turning the microphone off also turns off the bird science. This project
 offers an alternative: automatically detect and erase human speech at the
-edge, so the node can keep classifying birdsong while guaranteeing that no
-human speech is ever written to disk or uploaded.
+edge, so the node can continue classifying birdsong while preventing detected
+human speech from being written to disk or uploaded.
 
 The requirement is strict. It should be **impossible** to accidentally record
 a person, which means the guarantee has to hold even when the speech detector
-fails.
+fails: the system is designed to fail closed, so that if speech detection
+cannot complete successfully, the audio is redacted rather than written to
+disk.
 
 ## The Approach
 
@@ -84,12 +86,13 @@ entire audio buffer before saving rather than risk letting speech through.
 The existing `flint-pete/birdnet` node application writes every capture to a
 temporary FLAC file before any classification runs, on both audio paths:
 
-- **Microphone path** (`record_from_microphone`, app.py:160-178): pywaggle's
-  `Microphone.record()` returns an in-memory `AudioSample`, but the code
-  immediately calls `sample.save()` to a temp FLAC before doing anything
-  else.
-- **Camera path** (`record_from_camera`, app.py:181-237): ffmpeg writes the
-  capture straight to disk; the PCM samples never exist as a Python array.
+- **Microphone path** (`record_from_microphone` in the upstream application):
+  pywaggle's `Microphone.record()` returns an in-memory `AudioSample`, but
+  the code immediately calls `sample.save()` to a temp FLAC before doing
+  anything else.
+- **Camera path** (`record_from_camera` in the upstream application): ffmpeg
+  writes the capture straight to disk; the PCM samples never exist as a
+  Python array.
 
 This means redaction cannot be a downstream filter: by the time BirdNET
 runs, raw speech is already on disk. Redaction has to happen **before
@@ -103,11 +106,11 @@ harder and would require piping ffmpeg to stdout to decode in-process.
 ## What I built
 
 Three tested Python modules (all with unit tests, verified against source
-rather than assumed):
+rather than assumed).
 
 **`RedactionGate`** is a hysteresis state machine that takes per-frame speech
 scores and returns the time ranges to redact. It has configurable enter/exit
-thresholds (low bar to enter redaction, higher bar to exit, so it does not
+thresholds (higher bar to enter redaction, lower bar to exit, so it does not
 flicker mid-sentence), pre-roll padding, hangover (gap tolerance), and
 post-roll padding. It fails closed on empty input.
 
@@ -125,7 +128,10 @@ are not YAMNet classes, a detail worth verifying rather than assuming.)
 
 **`yamnet_speech.py`** wraps YAMNet to turn a raw audio array into per-frame
 speech scores: resample to 16kHz mono, run YAMNet, reduce each frame through
-`speech_classes`. Model load is lazy and cached.
+`speech_classes`. Model load is lazy and cached, and the model file path is
+resolved by an existence-filtered fallback chain (env override, plugin
+container, persistent dev path, volatile dev scratch) so the model survives
+node reboots.
 
 ## What has been verified on hardware (Jetson AGX Thor, aarch64)
 
@@ -140,9 +146,10 @@ against real speech audio, end to end:
   YAMNet front end is swapped to LiteRT. The LiteRT adapter and the
   validation harness live in the birdnet fork (hermes-mighdz/birdnet);
   upstreaming a copy of the adapter here is pending.
-- The converted YAMNet `.tflite` now lives in a persistent location on the
-  node (`~/AI-Projects/models/`) so it survives reboots; the path is picked
-  up via an env var documented on the fork.
+- The converted YAMNet `.tflite` lives at a persistent location on the node
+  (`/home/mighdz/AI-Projects/models/yamnet.tflite`) so it survives reboots;
+  the path is picked up via the `BIRDNET_YAMNET_TFLITE` env var (or the
+  fallback chain documented on the fork).
 - On a ~21s real speech clip (three spoken bursts with silence between),
   YAMNet's per-frame speech scores sat at the noise floor (~0.01) during
   silence and saturated near 0.99 during speech: clean discrimination.
@@ -155,11 +162,15 @@ against real speech audio, end to end:
   ambient sound was preserved untouched. This last part matters: the goal is
   not to blank the recording, it is to remove only human speech while
   keeping the soundscape that BirdNET depends on.
-- Earlier in the same session, a live RTSP capture from a networked Reolink
-  camera confirmed the camera exposes an AAC 16kHz mono audio stream,
-  exactly YAMNet's native input rate, so no resampling is needed for that
-  source. A first capture with no speaker present correctly produced zero
-  redaction windows (no false positives on ambient audio).
+- A live `ffprobe -show_streams` against a networked Reolink camera of the
+  same family (on the lab network, from Pete's credential sheet) confirmed
+  an audio stream over RTSP: AAC LC, 16 kHz, mono, which matches YAMNet's
+  native input rate, so no resampling is needed for that source. A different
+  camera model on the same sheet had no audio stream at all. My own physical
+  RLC-81MA unit has not been individually probed yet, so the exact stream on
+  the deployment camera is still to be confirmed. A capture with no speaker
+  present produced zero redaction windows (no false positives on ambient
+  audio).
 
 Together these confirm the runtime half of the design: the speech detector
 runs on the target hardware, and the redaction gate fires correctly on real
@@ -168,9 +179,10 @@ speech and stays quiet on real non-speech.
 **Mic-path integration: done.** The in-memory, never-persists integration is
 now landed on the birdnet fork (hermes-mighdz/birdnet): `redact_speech` is
 wired into `record_from_microphone` so the raw array is redacted before the
-save call, failing closed if scoring is unavailable. 43 tests pass on the
-fork, and a before/after demo (raw vs redacted output on the same speech
-clip) was produced.
+save call, failing closed if scoring is unavailable. The redaction modules
+have 14 unit tests, and the full 43-test repo suite passes with no
+regressions on the fork. A before/after demo (raw vs redacted output on the
+same speech clip) was produced.
 
 **Threshold tuning: harness built and verified; real tuning pending better
 data.** A sweep harness (`redaction/scripts/tune_thresholds.py` on the
@@ -190,11 +202,11 @@ time t, snip the video around it). None of it is implemented yet.
 
 ## Grounded parameter choices
 
-Padding and threshold choices are backed by sourced research on voice
-activity detection hangover timing (WebRTC VAD, NVIDIA Riva/Silero, 3GPP AMR
-specs) rather than guessed. Telephony VAD uses 60-580ms hangover, but that
-is tuned for the opposite cost trade-off (don't waste bandwidth on silence).
-For privacy redaction, where under-redacting is far more costly, the
+Padding and threshold choices are chosen by analogy to telephony voice
+activity detection hangover timing (WebRTC VAD, NVIDIA Riva/Silero, 3GPP
+AMR), which uses 60-580ms hangover. Telephony VAD is tuned for the opposite
+cost trade-off (do not waste bandwidth on silence), so the analogy is not
+direct; for privacy redaction, where under-redacting is far more costly, the
 recommended guard is ~1s post-utterance with a longer hold when the signal
 is non-stationary.
 
@@ -213,11 +225,17 @@ what was said. It also yields free statistics on human presence at the site.
 - **Done:** the microphone-path integration, the tested redaction
   components, on-Thor validation of YAMNet, and the before/after demo on
   real speech.
+- **Pending, plugin refactor:** refactor the microphone-path implementation
+  into a standalone producer/consumer Sage plugin that consumes audio from
+  the media-sampler cache and publishes a redacted audio product for
+  downstream applications such as BirdNET.
 - **Pending, live microphone run:** the integration has been validated by
   feeding recorded audio through the pipeline; the next step is a live run
   pulling directly from a physical microphone on the node.
-- **Proposed, not built, camera path:** RTSP audio from the Reolink is
-  confirmed (AAC 16kHz mono, verified live) and a design proposal is written
+- **Proposed, not built, camera path:** a live `ffprobe` on a networked
+  Reolink of the same family (from the lab credential sheet) confirmed an
+  RTSP audio stream at AAC 16 kHz mono, though my specific RLC-81MA unit has
+  not been individually probed. A design proposal is written
   (`redaction/CAMERA-PATH-DESIGN.md` on the fork); implementing the ffmpeg
   stdout-pipe decode is the open item. None of it is implemented yet.
 - **Pending, threshold tuning:** build a richer labeled clip set
