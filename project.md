@@ -184,6 +184,25 @@ have 14 unit tests, and the full 43-test repo suite passes with no
 regressions on the fork. A before/after demo (raw vs redacted output on the
 same speech clip) was produced.
 
+**Standalone redaction plugin: built, containerized, and published.** The
+microphone-path redaction has been refactored out of the birdnet fork into a
+separate Sage application (https://github.com/Miguel-Hernandez1/speech-redaction),
+its own ECR app with its own `sage.yaml` and `ecr-meta`, distinct from birdnet.
+It is a local-cache consumer/producer: it reads audio from the node's local
+cache, redacts speech in memory (reusing the same fail-closed `redact_speech`,
+so the raw unredacted array is never re-published), and writes a redacted audio
+product back into the cache as a new versioned frame for a downstream plugin
+such as BirdNET to consume. The consume/produce code, the Layer-1 ring writer,
+capture-timestamp preservation, and the redaction-event and heartbeat
+publishing, is built and unit-tested. The container was built with `pluginctl`
+on the Thor (H032) and ran end to end: YAMNet loaded via LiteRT inside the
+container and redacted speech from a real clip. The image is published to ECR
+(built, currently private). What is not yet done is a live run against an
+actual mounted `/local-cache`: the shared cache mount is not deployed on the
+nodes yet (per Pete's local-cache design doc), so the full cache
+consume-redact-produce loop has so far only been exercised in-container on a
+single clip, not against the live shared cache.
+
 **Threshold tuning: harness built and verified; real tuning pending better
 data.** A sweep harness (`redaction/scripts/tune_thresholds.py` on the
 fork's `redaction-mic-integration` branch) sweeps `enter_threshold` and
@@ -223,12 +242,21 @@ what was said. It also yields free statistics on human presence at the site.
 ## Current status and next steps
 
 - **Done:** the microphone-path integration, the tested redaction
-  components, on-Thor validation of YAMNet, and the before/after demo on
-  real speech.
-- **Pending, plugin refactor:** refactor the microphone-path implementation
-  into a standalone producer/consumer Sage plugin that consumes audio from
-  the media-sampler cache and publishes a redacted audio product for
-  downstream applications such as BirdNET.
+  components, on-Thor validation of YAMNet, the before/after demo on real
+  speech, and the standalone `speech-redaction` plugin (a separate ECR app,
+  built into a container with `pluginctl` on the Thor, run end to end on a
+  real clip, and published to ECR as a currently-private image).
+- **Done, plugin refactor:** the microphone-path implementation has been
+  refactored into a standalone producer/consumer Sage plugin
+  (https://github.com/Miguel-Hernandez1/speech-redaction) that consumes audio
+  from the local cache, redacts it in memory, and produces a redacted audio
+  product back into the cache for downstream applications such as BirdNET. The
+  consume/produce code is built and tested.
+- **Pending, live cache-mount run:** the plugin's consume-redact-produce loop
+  has been exercised in-container on a single clip, but not yet against an
+  actual mounted `/local-cache`. The shared cache mount is not deployed on the
+  nodes yet (per Pete's local-cache design doc), so a live run over the real
+  shared cache is the open item.
 - **Pending, live microphone run:** the integration has been validated by
   feeding recorded audio through the pipeline; the next step is a live run
   pulling directly from a physical microphone on the node.
