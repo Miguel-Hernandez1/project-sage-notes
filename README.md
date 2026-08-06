@@ -6,6 +6,8 @@ Notes, setup guides, and project work from my summer internship at Argonne Natio
 
 **[project.md](project.md)** — Speech Redaction at the Edge: automatic redaction of human speech on a Sage node so BirdNET can keep running at Haleakalā National Park without recording park visitors. The tested redaction modules (hysteresis gate, verified YAMNet speech classes, YAMNet wrapper) live in [code/redaction/](code/redaction/).
 
+The redaction is now packaged as a standalone Sage plugin ([speech-redaction](https://github.com/Miguel-Hernandez1/speech-redaction)), a separate cache consumer/producer app built and published to ECR ([portal page](https://portal.sagecontinuum.org/apps/app/mighdz/speech-redaction), currently private); the live run against a mounted `/local-cache` is still pending.
+
 ## Setup guides and working notes
 
 | Guide | What it covers |
