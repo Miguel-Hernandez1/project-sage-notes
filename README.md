@@ -8,6 +8,31 @@ Notes, setup guides, and project work from my summer internship at Argonne Natio
 
 The redaction is now packaged as a standalone Sage plugin ([speech-redaction](https://github.com/Miguel-Hernandez1/speech-redaction)), a separate cache consumer/producer app built and published to ECR ([portal page](https://portal.sagecontinuum.org/apps/app/mighdz/speech-redaction), currently private); the live run against a mounted `/local-cache` is still pending.
 
+### What I did, at a glance
+
+- **Found the real constraint.** The existing BirdNET node app writes every recording to disk *before* it classifies anything, so a speech filter bolted on at the end would be too late. Redaction had to happen in memory, before the file is ever saved. That one finding shaped the whole design.
+- **Built and tested the redaction.** Three small Python modules that detect human speech with YAMNet and erase it: a hysteresis gate, a verified list of YAMNet's speech classes (checked against the source, not assumed), and a YAMNet wrapper. Along the way I caught and fixed a frame-timing bug that was leaving the tail of every spoken word un-redacted.
+- **Designed it to fail closed.** If speech detection ever breaks, the node saves silence instead of risking a leak. Successful detection is what *permits* recording, not what triggers redaction, so there is no failure mode that quietly lets a voice through.
+- **Ran it on real edge hardware and shipped it.** Validated the full pipeline on an NVIDIA Jetson AGX Thor, then refactored it into a standalone Sage plugin, containerized it, and published it to the Sage app catalog (ECR).
+
+### How it works
+
+```mermaid
+flowchart LR
+  A["mic or cache<br/>(in-memory array)"] --> B["YAMNet<br/>speech score per frame"]
+  B --> C["RedactionGate<br/>turns scores into<br/>time windows"]
+  C --> D["zero out speech<br/>samples in place"]
+  D --> E["save, then BirdNET<br/>classify and publish"]
+```
+
+Redaction happens before anything is written to disk, so the raw, un-redacted audio is never saved. Full write-up in **[project.md](project.md)**; a plain-English walkthrough is in [docs/07](docs/07-redaction-explained.md).
+
+### Result
+
+![Before and after: human speech is detected and zeroed out while the surrounding soundscape is preserved](assets/redaction-before-after.jpg)
+
+Before and after on a ~21s test clip run on the Thor. The top plot is the original audio with human speech present; the bottom is the redacted output, with the detected speech zeroed (red spans) and the quiet ambient stretches left untouched. About 82% of this clip was redacted, across two merged windows. This same figure is the science image on the [Sage app page](https://portal.sagecontinuum.org/apps/app/mighdz/speech-redaction).
+
 ## Setup guides and working notes
 
 | Guide | What it covers |
