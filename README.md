@@ -33,17 +33,29 @@ Redaction happens before anything is written to disk, so the raw, un-redacted au
 
 Before and after on a ~21s test clip run on the Thor. The top plot is the original audio with human speech present; the bottom is the redacted output, with the detected speech zeroed (red spans) and the quiet ambient stretches left untouched. About 82% of this clip was redacted, across two merged windows. This same figure is the science image on the [Sage app page](https://portal.sagecontinuum.org/apps/app/mighdz/speech-redaction).
 
-## Setup guides and working notes
+## Notes and guides
+
+Docs are numbered in the order I wrote them. The first few are general setup
+guides; the rest (04 onward) are the redaction project, roughly in the order
+the work happened.
+
+### Setup guides
 
 | Guide | What it covers |
 |---|---|
 | [01 - sage-agent on local Ollama](docs/01-sage-agent-ollama.md) | Switching the sage-agent LLM backend from a cloud API to a local Ollama model. |
 | [02 - tmux with persistent logging](docs/02-tmux-logging.md) | Keeping remote sessions alive across disconnects and saving terminal history to disk. |
 | [03 - Hermes Agent on a Thor node](docs/03-hermes-on-thor.md) | Installing Hermes Agent on a Sage Thor node wired to local Ollama, plus notes on a couple of issues I ran into. |
+
+### Redaction project
+
+| Guide | What it covers |
+|---|---|
 | [04 - Audio privacy redaction](docs/04-audio-redaction.md) | Working notes for the redaction project: pipeline persistence analysis, RedactionGate design, open questions, hardware. |
 | [05 - VAD hangover research](docs/05-vad-hangover-research.md) | Sourced post-speech padding numbers from WebRTC VAD, Silero/Riva, and 3GPP AMR, mapped onto the privacy-redaction cost model. |
 | [06 - Agent handoff: birdnet fork](docs/06-agent-handoff-birdnet-fork.md) | Orientation for a future agent: two-repo split, real-vs-proposed status, invariants, model paths, known inconsistencies. |
-| [07 - Speech redaction, explained simply](docs/07-redaction-explained.md) | Plain-English walkthrough of the redaction system with a commit-mapped timeline - for re-learning or showing others. |
+| [07 - Speech redaction, explained simply](docs/07-redaction-explained.md) | Plain-English walkthrough of the redaction system with a commit-mapped timeline, for re-learning or showing others. |
+| [08 - Speech redaction: possible next steps](docs/08-redaction-next-steps.md) | Options coming out of the Aug 10 presentation: evaluation data as the main unblocker, source separation, where redaction happens, sensor-level ideas, and a suggested priority order. |
 
 ## Context
 
