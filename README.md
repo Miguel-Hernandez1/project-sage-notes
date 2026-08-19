@@ -2,6 +2,8 @@
 
 Notes, setup guides, and project work from my summer internship at Argonne National Laboratory, working with the Sage / Waggle edge-AI stack.
 
+> **Published Sage application:** the standalone speech-redaction plugin built in this internship is live in the Sage app catalog at [portal.sagecontinuum.org/apps/app/mighdz/speech-redaction](https://portal.sagecontinuum.org/apps/app/mighdz/speech-redaction). Source and its own README: [github.com/Miguel-Hernandez1/speech-redaction](https://github.com/Miguel-Hernandez1/speech-redaction).
+
 ## The project
 
 **[project.md](project.md)** - Speech Redaction at the Edge: automatic redaction of human speech on a Sage node so BirdNET can keep running at Haleakalā National Park without recording park visitors. The tested redaction modules (hysteresis gate, verified YAMNet speech classes, YAMNet wrapper) live in [code/redaction/](code/redaction/).
