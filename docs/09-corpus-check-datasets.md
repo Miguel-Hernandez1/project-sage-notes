@@ -78,7 +78,7 @@ This is relevant because it shows you can make the detector much smaller without
 corpus for evaluation of voice activity detection algorithms. Proceedings of
 Interspeech 2010, 3110-3113.**
 
-There is 600 hours of noisy speech built specifically to evaluate VAD systems, and over 10 hours of background noise recorded at 10 locations across 5 scenarios, mixed with TIMIT speech across a range of SNRs and speech proportions.
+They recorded over 10 hours of background noise at 10 locations across 5 scenarios, then mixed TIMIT speech into it across a range of SNRs and speech proportions. The result is 600 hours of noisy speech built specifically to evaluate VAD systems.
 
 Potentially useful: the QUT-NOISE background audio is CC-BY-SA, and the code for building the mixed corpus is BSD licensed, both at github.com/qutsaivt/QUT-NOISE.
 
