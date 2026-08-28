@@ -59,6 +59,7 @@ the work happened.
 | [07 - Speech redaction, explained simply](docs/07-redaction-explained.md) | Plain-English walkthrough of the redaction system with a commit-mapped timeline, for re-learning or showing others. |
 | [08 - Speech redaction: possible next steps](docs/08-redaction-next-steps.md) | Options coming out of the Aug 10 presentation: evaluation data as the main unblocker, source separation, where redaction happens, sensor-level ideas, and a suggested priority order. |
 | [09 - Corpus check: existing datasets](docs/09-corpus-check-datasets.md) | Whether a speech-plus-soundscape dataset already exists: closest prior work (ecoVAD), an edge-distillation follow-up, QUT-NOISE-TIMIT, and what we would reuse vs. build for our own evaluation set. |
+| [10 - Cache integration: consumer and producer design](docs/10-cache-integration-design.md) | Design record for the v2-style cache consumer/producer: the media-sampler3 workflow verified on H00F, the sidecar and producer contract, provenance and capture-ts decisions, bugs caught before building, and the privacy-claim correction. |
 
 ## Context
 
