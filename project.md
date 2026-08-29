@@ -43,7 +43,7 @@ microphone capture (in-memory audio array)
    -> zero out the speech windows in the array, in place
    -> BirdNET classification and publish
    -> publish redaction event (timestamp, duration)
-   (the raw, un-redacted audio never touches disk)
+   (the plugin only ever persists the redacted array, never unredacted audio)
 ```
 
 **Detecting speech.** BirdNET's own human-sound classes do not reliably catch

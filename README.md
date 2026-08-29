@@ -8,7 +8,7 @@ Notes, setup guides, and project work from my summer internship at Argonne Natio
 
 **[project.md](project.md)** - Speech Redaction at the Edge: automatic redaction of human speech on a Sage node so BirdNET can keep running at Haleakalā National Park without recording park visitors. The tested redaction modules (hysteresis gate, verified YAMNet speech classes, YAMNet wrapper) live in [code/redaction/](code/redaction/).
 
-The redaction is now packaged as a standalone Sage plugin ([speech-redaction](https://github.com/Miguel-Hernandez1/speech-redaction)), a separate cache consumer/producer app built and published to ECR ([portal page](https://portal.sagecontinuum.org/apps/app/mighdz/speech-redaction), currently private); the live run against a mounted `/local-cache` is still pending.
+The redaction is now packaged as a standalone Sage plugin ([speech-redaction](https://github.com/Miguel-Hernandez1/speech-redaction)), a separate cache consumer/producer app built and published to ECR ([portal page](https://portal.sagecontinuum.org/apps/app/mighdz/speech-redaction), currently private). The full cache consume, redact, produce loop has now run end-to-end on H00F against the live media-sampler3 cache with the real YAMNet model; running it inside the plugin container on the node is the remaining step.
 
 ### What I did, at a glance
 
@@ -27,7 +27,7 @@ flowchart LR
   D --> E["save, then BirdNET<br/>classify and publish"]
 ```
 
-Redaction happens before anything is written to disk, so the raw, un-redacted audio is never saved. Full write-up in **[project.md](project.md)**; a plain-English walkthrough is in [docs/07](docs/07-redaction-explained.md).
+This plugin never writes unredacted audio: only the redacted product is available to downstream consumers and for upload. Raw clips currently reach the node's SSD via the upstream producer (media-sampler3), with a move to a ramdisk planned. Full write-up in **[project.md](project.md)**; a plain-English walkthrough is in [docs/07](docs/07-redaction-explained.md).
 
 ### Result
 
