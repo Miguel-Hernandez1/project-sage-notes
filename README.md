@@ -60,6 +60,7 @@ the work happened.
 | [08 - Speech redaction: possible next steps](docs/08-redaction-next-steps.md) | Options coming out of the Aug 10 presentation: evaluation data as the main unblocker, source separation, where redaction happens, sensor-level ideas, and a suggested priority order. |
 | [09 - Corpus check: existing datasets](docs/09-corpus-check-datasets.md) | Whether a speech-plus-soundscape dataset already exists: closest prior work (ecoVAD), an edge-distillation follow-up, QUT-NOISE-TIMIT, and what we would reuse vs. build for our own evaluation set. |
 | [10 - Cache integration: consumer and producer design](docs/10-cache-integration-design.md) | Design record for the v2-style cache consumer/producer: the media-sampler3 workflow verified on H00F, the sidecar and producer contract, provenance and capture-ts decisions, bugs caught before building, and the privacy-claim correction. |
+| [11 - End-to-end verification on H00F](docs/11-end-to-end-verification.md) | First run of the full cache consume, redact, produce loop on H00F with the real YAMNet model: latency (~250 ms/clip), fail-closed confirmed in production, seen-store durability across restarts, output naming and provenance, and the two bugs the run surfaced. |
 
 ## Context
 
