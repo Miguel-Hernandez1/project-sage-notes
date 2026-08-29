@@ -242,11 +242,13 @@ other, but it is not enough to pick a final operating point for a real deploymen
 
 ## Reproducing
 
-There are three scripts for this, and they live in `~/AI-Projects/qa-dataset`,
-which is a scratch area rather than part of this repo. `generate_qa.py` builds the
-clips and their sidecars, `score_qa.py` runs the plugin's own `speech_scores`
-exactly once and saves the raw per-frame scores into `scores/`, and
-`evaluate_qa.py` applies the gate to those saved scores and prints the tables. The
+The scripts, along with setup and download instructions, live in their own repo
+at [github.com/Miguel-Hernandez1/speech-redaction-qa](https://github.com/Miguel-Hernandez1/speech-redaction-qa),
+so anyone can reproduce this without my local paths. There are three of them.
+`generate_qa.py` builds the clips and their sidecars, `score_qa.py` runs the
+plugin's own `speech_scores` exactly once and saves the raw per-frame scores into
+`scores/`, and `evaluate_qa.py` applies the gate to those saved scores and prints
+the tables. The
 split is the whole point, because scoring is the expensive step and it only has to
 run once, which means that sweeping gate parameters against the saved scores takes
 seconds instead of re-running the model. On top of that, all of the counts, which
