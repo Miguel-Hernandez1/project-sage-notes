@@ -1,6 +1,6 @@
 # End-to-End Verification on H00F
 
-**Miguel Hernandez, August 29, 2026**
+**Miguel Hernandez, August 28, 2026**
 
 First run of the full cache consume, redact, produce loop on a live node with
 the real YAMNet model. Everything before this was tested against a stub, so this
