@@ -62,6 +62,7 @@ the work happened.
 | [10 - Cache integration: consumer and producer design](docs/10-cache-integration-design.md) | Design record for the v2-style cache consumer/producer: the media-sampler3 workflow verified on H00F, the sidecar and producer contract, provenance and capture-ts decisions, bugs caught before building, and the privacy-claim correction. |
 | [11 - End-to-end verification on H00F](docs/11-end-to-end-verification.md) | First run of the full cache consume, redact, produce loop on H00F with the real YAMNet model: latency (~250 ms/clip), fail-closed confirmed in production, seen-store durability across restarts, output naming and provenance, and the two bugs the run surfaced. |
 | [12 - Evaluation: recall and leaked speech](docs/12-evaluation-recall-and-leak.md) | First measurement of the detector on a synthetic set (LibriSpeech in ESC-50 beds, LUFS-normalized, SNR 0 to -20 dB, exact ground truth): recall and leaked-speech tables, the rain-masking collapse below -10 dB, and post-roll vs enter-threshold tuning. |
+| [13 - Iron Horse node and output naming](docs/13-iron-horse-and-output-naming.md) | Working note: the new Iron Horse (IHV / H02A) assignment and the audio-from-camera question, plus two corrections to the plugin's output naming (a redacted_audio/<source>/ tree, and per-site stream names). |
 
 ## Context
 
