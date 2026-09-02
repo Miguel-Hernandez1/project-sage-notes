@@ -1,6 +1,6 @@
 # Poster Draft: Speech Redaction at the Edge
 
-**Miguel Hernandez**
+**Miguel Hernandez, September 2, 2026**
 
 Content draft for the internship poster. This is the text and the figures, not
 the layout. Sending it this way first so the numbers and the claims can be
