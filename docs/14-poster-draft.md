@@ -2,8 +2,8 @@
 
 **Miguel Hernandez, September 2, 2026**
 
-Content draft for the internship poster. This is the text and the figures, not
-the layout
+Content draft for the internship poster (this is the text and the figures, not
+the layout)
 
 Every number here comes from the current committed version of doc 12, a
 500-clip evaluation set (400 speech-positive clips plus 100 speech-free
