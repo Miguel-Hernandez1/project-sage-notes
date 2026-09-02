@@ -7,8 +7,8 @@ the layout. Sending it this way first so the numbers and the claims can be
 checked before anything gets designed.
 
 Every number here comes from the current committed version of doc 12 (the
-400-clip crossed set) or from the listening test data in the qa repo. The
-earlier 125-clip numbers are stale and are not used.
+400-speech-clip crossed set) or from the listening test data in the qa repo.
+The earlier 125-clip numbers are stale and are not used.
 
 ---
 
@@ -86,9 +86,10 @@ failure was unplanned and the guarantee held.
 
 To find out, I built an evaluation set where the ground truth is exact because I
 placed the speech myself: LibriSpeech mixed into ESC-50 soundscape beds,
-loudness normalized before mixing, 400 speech clips crossing 4 beds against 4
-speech sources at 5 SNR levels from 0 to -20 dB, plus 100 speech-free clips to
-measure false positives.
+loudness normalized before mixing, into 500 clips total. The 400 speech clips
+are a full cross of 5 soundscape categories (4 beds drawn per category), 4
+speech sources, and 5 SNR levels from 0 to -20 dB; the other 100 clips are
+speech-free, to measure false positives.
 
 At the current gate settings, across that full range:
 
@@ -111,7 +112,7 @@ leak a whole spoken word. Leaked speech is the privacy metric.
 
 ---
 
-## The main result: what leaks is not intelligible
+## Human intelligibility falls before speech detection does
 
 Recall numbers only matter if you know where a human stops being able to
 understand the speech. So I ran a blind listening test on 40 clips from the set,
@@ -126,9 +127,9 @@ the actual words.
 | -15 | **0%** | 69.5% |
 | -20 | **0%** | 49.3% |
 
-At -15 dB and below, not a single clip was intelligible, and the detector was
-still catching most of the speech. The detector's recall exceeds human
-intelligibility at every level tested.
+In the 40-clip listening subset, no words were intelligible at -15 or -20 dB.
+Across the full evaluation set, detector recall at those SNRs was 69.5% and
+49.3%.
 
 So the leak measured above is largely leaking audio nobody could understand. The
 real cost of the system's sensitivity is the bird audio it redacts by mistake,
@@ -152,10 +153,11 @@ The collapse below -10 dB is not spread evenly. It is concentrated in one bed.
 | engine | 75.2 |
 | **rain** | **57.0** |
 
-Rain is broadband noise that overlaps the speech spectrum, so it masks speech in
-a way that tonal soundscapes like crickets and birdsong do not. At -20 dB in
-rain, YAMNet's output sits at the noise floor and no gate setting recovers it.
-That is a limit of the detector, not something to tune around.
+A likely reason: rain is broadband noise that overlaps the speech spectrum,
+unlike tonal soundscapes such as crickets and birdsong. I have not tested that
+mechanism directly, only its effect. At -20 dB in rain, YAMNet's output sits at
+the noise floor and no gate setting recovers it. That is a limit of the
+detector, not something to tune around.
 
 It matters for the deployment target, because Haleakala is a wet mountain park
 and rain is not an edge case there.
@@ -164,7 +166,9 @@ Rain also destroyed human comprehension in the listening test, zero words made
 out. So the detector and the listener fail on the same material, which is at
 least consistent. Birdsong is the interesting divergence: it hurt human
 comprehension badly (0% of words made out) while the detector handled it fine
-(78.2% recall). Bird chirps sit in the speech formant range.
+(78.2% recall). One possible reason is that bird chirps overlap frequencies used
+by speech formants, which could hurt human parsing without confusing YAMNet's
+classifier, but I have not tested that mechanism directly.
 
 ---
 
@@ -236,7 +240,7 @@ unredacted survives a reboot, is the next step and is planned with Peter.
 ## Notes on numbers, for review not for the poster
 
 The human column above is from a 40-clip subset and the detector column is from
-the full 400-clip set. A matched comparison on the same 40 clips exists in
+the full 400-speech-clip set. A matched comparison on the same 40 clips exists in
 `score_listening.py`, but the score files it reads are gitignored, so I cannot
 reproduce that number from the repo alone. The comparison as presented is
 directionally right and the gap is large, but the two columns are not on
