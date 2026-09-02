@@ -144,9 +144,10 @@ samples the detector caught, but side by side they point the same direction:
 the detector keeps catching speech well past the level where a person stops
 understanding it.
 
-So the leak measured above is largely leaking audio nobody could understand. The
-real cost of the system's sensitivity is the bird audio it redacts by mistake: a
-mean of 0.77% of each speech-free clip's duration.
+These results suggest that much of the low-SNR leakage may fall below word
+intelligibility, but the listening study is preliminary and covers a 40-clip
+subset. The real cost of the system's sensitivity is the bird audio it redacts
+by mistake: a mean of 0.77% of each speech-free clip's duration.
 
 One more thing the listening test showed: a voice was audible on all 40 clips,
 including at -20 dB where no words came through. Presence leaks before content
