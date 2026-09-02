@@ -6,9 +6,10 @@ Content draft for the internship poster. This is the text and the figures, not
 the layout. Sending it this way first so the numbers and the claims can be
 checked before anything gets designed.
 
-Every number here comes from the current committed version of doc 12 (the
-400-speech-clip crossed set) or from the listening test data in the qa repo.
-The earlier 125-clip numbers are stale and are not used.
+Every number here comes from the current committed version of doc 12, a
+500-clip evaluation set (400 speech-positive clips plus 100 speech-free
+controls), or from the listening test data in the qa repo. The earlier
+125-clip numbers are stale and are not used.
 
 ---
 
@@ -33,7 +34,11 @@ anything is shared.
 
 The constraint that shaped the design: the existing BirdNET app writes the full
 recording to disk before it classifies anything. A speech filter added at the
-end would be too late. Redaction has to happen before persistence.
+end would be too late. The guarantee this design holds today is that redaction
+happens before audio is uploaded or exposed to any downstream consumer. Raw
+clips currently still reach the node's disk first, written there by the
+upstream producer; moving that cache to volatile memory, so unredacted audio
+never touches disk at all, is the remaining step.
 
 ---
 
@@ -54,7 +59,8 @@ It writes the redacted clip and a sidecar into a separate cache area and exits.
 Design decisions worth naming:
 
 **Fail closed.** If the detector cannot run, the whole buffer is zeroed rather
-than passed through. Losing bird audio is recoverable. Leaking speech is not.
+than passed through. Both failure modes lose data, but for a privacy pipeline
+dropping audio is the safer one.
 
 **Provenance travels with the artifact.** Each output carries the redaction
 windows, the original capture timestamp, and a pointer back to the source clip,
@@ -71,7 +77,7 @@ Ran end to end on H00F against the live media-sampler3 cache with the real
 YAMNet model.
 
 - About 250 ms per 15 second clip, against a producer writing one clip a minute
-- Clean audio passes through essentially unchanged
+- Speech-free regions are preserved unless the detector triggers
 - The seen store survives restarts, so nothing is reprocessed
 - 45 tests passing on the node
 
@@ -86,14 +92,14 @@ failure was unplanned and the guarantee held.
 
 To find out, I built an evaluation set where the ground truth is exact because I
 placed the speech myself: LibriSpeech mixed into ESC-50 soundscape beds,
-loudness normalized before mixing, into 500 clips total. The 400 speech clips
-are a full cross of 5 soundscape categories (4 beds drawn per category), 4
-speech sources, and 5 SNR levels from 0 to -20 dB; the other 100 clips are
-speech-free, to measure false positives.
+loudness normalized before mixing. The 400 speech-positive clips are a full
+cross of 5 soundscape categories (4 beds drawn per category), 4 speech sources,
+and 5 SNR levels from 0 to -20 dB; the 100 speech-free controls measure false
+positives.
 
 At the current gate settings, across that full range:
 
-| Recall | Mean leaked speech | False positives on speech-free clips |
+| Recall | Mean leaked speech | Mean fraction of each speech-free clip redacted |
 |---:|---:|---:|
 | 75.3% | 1340 ms per clip | 0.77% |
 
@@ -119,25 +125,28 @@ understand the speech. So I ran a blind listening test on 40 clips from the set,
 scoring each one for whether I could hear a voice and whether I could make out
 the actual words.
 
-| SNR (dB) | Human made out words | Detector recall, same 40 clips |
+| SNR (dB) | Human made out words (n=8) | Detector recall, same 40 clips |
 |---:|---:|---:|
-| 0 | 50% | 99.5% |
-| -5 | 38% | 86.0% |
-| -10 | 38% | 91.5% |
-| -15 | **0%** | 84.0% |
-| -20 | **0%** | 65.8% |
+| 0 | 50% (4 of 8 clips) | 99.5% |
+| -5 | 38% (3 of 8 clips) | 86.0% |
+| -10 | 38% (3 of 8 clips) | 91.5% |
+| -15 | **0% (0 of 8 clips)** | 84.0% |
+| -20 | **0% (0 of 8 clips)** | 65.8% |
 
 Both columns above come from the same 40 clips, a paired comparison, not an
 aggregate one. The full-set detector numbers earlier in this document (92.5,
-86.9, 79.4, 69.5, 49.3 by SNR) are the average across all 400 speech clips, a
-different and larger set than this exact 40. On this matched set, at -15 dB and
--20 dB not a single clip was intelligible, and the detector was still catching
-84% and 66% of the speech. The detector's recall exceeds human intelligibility
-at every level tested.
+86.9, 79.4, 69.5, 49.3 by SNR) are the average across all 400 speech-positive
+clips, a different and larger set than this exact 40. On this matched set, at
+-15 dB and -20 dB not a single clip was intelligible, while the detector's
+sample-level recall on those same clips was 84% and 66%. The two are different
+measures, fraction of clips a listener understood versus fraction of speech
+samples the detector caught, but side by side they point the same direction:
+the detector keeps catching speech well past the level where a person stops
+understanding it.
 
 So the leak measured above is largely leaking audio nobody could understand. The
-real cost of the system's sensitivity is the bird audio it redacts by mistake,
-which is 0.77% of speech-free clips.
+real cost of the system's sensitivity is the bird audio it redacts by mistake: a
+mean of 0.77% of each speech-free clip's duration.
 
 One more thing the listening test showed: a voice was audible on all 40 clips,
 including at -20 dB where no words came through. Presence leaks before content
@@ -160,7 +169,7 @@ The collapse below -10 dB is not spread evenly. It is concentrated in one bed.
 A likely reason: rain is broadband noise that overlaps the speech spectrum,
 unlike tonal soundscapes such as crickets and birdsong. I have not tested that
 mechanism directly, only its effect. At -20 dB in rain, YAMNet's output sits at
-the noise floor and no gate setting recovers it. That is a limit of the
+the noise floor and no tested gate setting recovered it. That is a limit of the
 detector, not something to tune around.
 
 It matters for the deployment target, because Haleakala is a wet mountain park
