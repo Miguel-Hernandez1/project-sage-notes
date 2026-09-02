@@ -119,17 +119,21 @@ understand the speech. So I ran a blind listening test on 40 clips from the set,
 scoring each one for whether I could hear a voice and whether I could make out
 the actual words.
 
-| SNR (dB) | Made out words | Detector recall |
+| SNR (dB) | Human made out words | Detector recall, same 40 clips |
 |---:|---:|---:|
-| 0 | 50% | 92.5% |
-| -5 | 38% | 86.9% |
-| -10 | 38% | 79.4% |
-| -15 | **0%** | 69.5% |
-| -20 | **0%** | 49.3% |
+| 0 | 50% | 99.5% |
+| -5 | 38% | 86.0% |
+| -10 | 38% | 91.5% |
+| -15 | **0%** | 84.0% |
+| -20 | **0%** | 65.8% |
 
-In the 40-clip listening subset, no words were intelligible at -15 or -20 dB.
-Across the full evaluation set, detector recall at those SNRs was 69.5% and
-49.3%.
+Both columns above come from the same 40 clips, a paired comparison, not an
+aggregate one. The full-set detector numbers earlier in this document (92.5,
+86.9, 79.4, 69.5, 49.3 by SNR) are the average across all 400 speech clips, a
+different and larger set than this exact 40. On this matched set, at -15 dB and
+-20 dB not a single clip was intelligible, and the detector was still catching
+84% and 66% of the speech. The detector's recall exceeds human intelligibility
+at every level tested.
 
 So the leak measured above is largely leaking audio nobody could understand. The
 real cost of the system's sensitivity is the bird audio it redacts by mistake,
@@ -223,8 +227,9 @@ unredacted survives a reboot, is the next step and is planned with Peter.
 1. Before and after waveform on a real clip, speech spans marked. Already have
    this from the H032 validation run.
 2. The pipeline diagram: media-sampler3 to redacted cache to BirdNET.
-3. Human intelligibility against detector recall, plotted by SNR. This is the
-   centerpiece.
+3. Human intelligibility against detector recall, plotted by SNR. Already
+   rendered at `speech-redaction-qa/listening/human_vs_detector.png`. This is
+   the centerpiece.
 4. The per-bed recall bar chart, with rain called out.
 
 ---
@@ -239,9 +244,9 @@ unredacted survives a reboot, is the next step and is planned with Peter.
 
 ## Notes on numbers, for review not for the poster
 
-The human column above is from a 40-clip subset and the detector column is from
-the full 400-speech-clip set. A matched comparison on the same 40 clips exists in
-`score_listening.py`, but the score files it reads are gitignored, so I cannot
-reproduce that number from the repo alone. The comparison as presented is
-directionally right and the gap is large, but the two columns are not on
-identical data and I have not claimed they are.
+The matched detector numbers in the table above come from
+`score_listening.py`'s `matched_yamnet_recall()`, run on the same 40 clips as
+the human column. That function reads `scores/` and `mixed/`, which are
+gitignored, not because the result can't be reproduced but because they are
+regenerated data: run `generate_qa.py` then `score_qa.py` locally (see the qa
+repo's README) and `score_listening.py` will reproduce this table from there.
