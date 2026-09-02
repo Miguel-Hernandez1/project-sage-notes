@@ -63,6 +63,7 @@ the work happened.
 | [11 - End-to-end verification on H00F](docs/11-end-to-end-verification.md) | First run of the full cache consume, redact, produce loop on H00F with the real YAMNet model: latency (~250 ms/clip), fail-closed confirmed in production, seen-store durability across restarts, output naming and provenance, and the two bugs the run surfaced. |
 | [12 - Evaluation: recall and leaked speech](docs/12-evaluation-recall-and-leak.md) | First measurement of the detector on a synthetic set (LibriSpeech in ESC-50 beds, LUFS-normalized, SNR 0 to -20 dB, exact ground truth): recall and leaked-speech tables, the rain-masking collapse below -10 dB, and post-roll vs enter-threshold tuning. |
 | [13 - Iron Horse node and output naming](docs/13-iron-horse-and-output-naming.md) | Working note: the new Iron Horse (IHV / H02A) assignment and the audio-from-camera question, plus two corrections to the plugin's output naming (a redacted_audio/<source>/ tree, and per-site stream names). |
+| [14 - Poster draft](docs/14-poster-draft.md) | Content draft for the internship poster: the claims and numbers before any layout. |
 
 ## Context
 
