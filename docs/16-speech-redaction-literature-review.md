@@ -68,6 +68,18 @@ The Google system is mainly dealing with known users, customers, or patients who
 
 So for now, the safest conclusion from this research is that redaction has strong precedent as a privacy-protection technique, but I still do not have a source establishing a specific legal redaction requirement for passive environmental audio in a U.S. national park. That distinction matters because I do not want to make the project sound legally justified by a paper that is actually discussing a completely different setting.
 
+### NPS-specific findings (added September 3, 2026)
+
+I ran one more search focused specifically on the National Park Service and Haleakalā, since that is the actual deployment target and general privacy law does not tell us much about it.
+
+NPS does have an established acoustic monitoring program relevant to this project. NPS Management Policy 4.9 directs the agency to preserve natural soundscapes, and the Natural Sounds and Night Skies Division (NSNSD) runs acoustic monitoring at more than 300 sites across over 60 park units, including sites in Hawaii. [NPS Natural Sounds Program brochure](https://www.npshistory.com/brochures/acoustic-mon.pdf) One of NSNSD's own reference pages includes a photo specifically captioned "Acoustic monitoring station in Haleakala National Park," so NPS already operates acoustic monitoring infrastructure at the deployment site. [Source: NPS Reference Manual 47, Chapter 2, URL not independently verified]
+
+I could not find anything in NSNSD's public materials addressing consent, redaction, or handling of incidentally captured human speech. Their own description of the program's audio recordings says the recordings help identify "sounds' source of origin, such as wildlife, weather, park visitors, and park operations," meaning capturing visitor sound already happens as a normal part of their monitoring and nothing in what I found addresses it as a privacy concern. [NPS Sound Gallery](https://www.nps.gov/subjects/sound/gallery.htm)
+
+Separately, NPS does regulate audio recording, but in the other direction from what Sage does. Under the EXPLORE Act (Public Law 118-234, January 2025), codified at 54 U.S.C. 100905, NPS permit requirements govern visitors who bring recording equipment into a park. [NPS Filming, Still Photography, and Audio Recording](https://www.nps.gov/aboutus/news/film-and-photo-permits.htm) That policy is about whether a person needs a permit to record in the park, not about whether a park's own passive sensor may capture a visitor's speech. It is a near miss, not a hit, and I am flagging it here specifically so it is not mistaken for on-point authority later.
+
+Updated conclusion for this section: there is real NPS acoustic monitoring policy and infrastructure that touches this exact deployment site, but nothing found establishes a rule for handling incidentally captured human speech. NSNSD's own program appears to capture visitor sound already without treating it as a privacy question. That gap is either an opportunity, since this project could be a genuinely useful model for how NPS acoustic monitoring should handle visitor speech, or a sign that this question has not been raised inside NPS as an established concern.
+
 ---
 
 ## 3. Evaluation and Metrics
@@ -176,3 +188,7 @@ Finally, the architecture comparison gives a clearer reason for using presence-b
 - Fu, X., et al. (2026). "Trust the Voice, Hide the Source: Anonymous Provenance for Verifiably Edited Audio." [Source: URL not verified], cited here only for its reference to Miller, L., and Toliver, J. (2014), "Implementing a Body-Worn Camera Program: Recommendations and Lessons Learned," U.S. DOJ Office of Community Oriented Policing Services. [Source: URL not verified]
 - Gadi Parthi, A., Kodali, R.K., Sankiti, S.R., Punniyamoorthy, V., Pothineni, B., Veerapaneni, P.K., Palanigounder, M., and Maruthavanan, D. (2025). "Scalable AI-Powered Speech Redaction: Evolving from Cloud Pipelines to LLM-Driven Architectures." 2025 IEEE International Symposium on Smart Electronic Systems (iSES). [DOI: 10.1109/iSES67504.2025.00089](https://doi.org/10.1109/iSES67504.2025.00089)
 - Wattanapornprom, W., Wandee, P., Bhundularp, M., Susutti, W., Srisuk, P., and Chomchaiya, S. (2025). "User-Centric Video Privacy Preservation: Automated Face Detection, Recognition, and Blurring for PDPA and Beyond." 2025 9th International Conference on Information Technology (InCIT). [DOI: 10.1109/INCIT66780.2025.11276022](https://doi.org/10.1109/INCIT66780.2025.11276022)
+- National Park Service. "Natural Sounds Program" brochure. [npshistory.com/brochures/acoustic-mon.pdf](https://www.npshistory.com/brochures/acoustic-mon.pdf)
+- National Park Service. "Reference Manual 47, Chapter 2: Acoustical Monitoring." https://www.nps.gov/subjects/sound/rm47-part-2-data.htm [Source: URL not independently verified]
+- National Park Service. "Sound Gallery." [nps.gov/subjects/sound/gallery.htm](https://www.nps.gov/subjects/sound/gallery.htm)
+- National Park Service. "Filming, Still Photography, and Audio Recording." [nps.gov/aboutus/news/film-and-photo-permits.htm](https://www.nps.gov/aboutus/news/film-and-photo-permits.htm)
