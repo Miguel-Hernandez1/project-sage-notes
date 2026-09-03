@@ -2,16 +2,6 @@
 
 **Miguel Hernandez, September 3, 2026**
 
-Scope note: this review covers only sources whose full text I have direct,
-re-checkable access to in this session, cross-checked against a full re-read
-of [doc 05](05-vad-hangover-research.md), [doc 09](09-corpus-check-datasets.md),
-and [doc 12](12-evaluation-recall-and-leak.md). A larger batch of legal/ethics
-papers was reviewed earlier in this project but survived only as summarized
-conclusions after a context compaction, without retrievable quotes or
-citations I can verify against the original text. Per instruction, none of
-that batch is included here. Every claim below traces to text I actually
-read this session.
-
 ---
 
 ## Big Picture
