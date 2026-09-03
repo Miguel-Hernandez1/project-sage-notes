@@ -9,6 +9,12 @@ an SNR range, and that is on purpose, because the range changes the numbers a lo
 and they get misread the moment you drop the context. So unless I say otherwise,
 everything below is measured on the 0 to -20 dB set that I describe next.
 
+Note: these tables were computed at the gate's earlier default of
+post_roll_seconds=0.75. As of September 3, 2026, the shipped default is 1.5s,
+based on this sweep's own finding plus the corroborating evidence in doc 16.
+The numbers above describe the configuration in effect at evaluation time, not
+the current shipped behavior.
+
 An earlier version of this writeup rested on a set with one soundscape bed per
 category, and it produced a speaker finding that turned out to be false once I
 controlled for the bed. I have rebuilt the set to separate those two effects, and
