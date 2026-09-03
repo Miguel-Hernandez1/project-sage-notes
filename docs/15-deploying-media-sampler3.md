@@ -1,6 +1,6 @@
 # Deploying media-sampler3 on a New Node (H02A)
 
-**Miguel Hernandez**
+**Miguel Hernandez, September 3, 2026**
 
 These are my notes from getting the media-sampler3 audio producer running on H02A, the Iron Horse node. I did all of this directly on the node, and I wanted to write down the steps because the setup on H02A was different from H00F in a few important ways.
 
