@@ -65,6 +65,7 @@ the work happened.
 | [13 - Iron Horse node and output naming](docs/13-iron-horse-and-output-naming.md) | Working note: the new Iron Horse (IHV / H02A) assignment and the audio-from-camera question, plus two corrections to the plugin's output naming (a redacted_audio/<source>/ tree, and per-site stream names). |
 | [14 - Poster draft](docs/14-poster-draft.md) | Content draft for the internship poster: the claims and numbers before any layout. |
 | [15 - Deploying media-sampler3 on H02A](docs/15-deploying-media-sampler3.md) | Notes from deploying media-sampler3 on H02A: what works, what is not verified there yet, and what is still needed. |
+| [16 - Speech redaction literature review](docs/16-speech-redaction-literature-review.md) | Synthesis of VAD hangover/padding literature, legal grounding, evaluation-metric conventions, intelligibility thresholds, and redaction architectures, cross-checked against docs 05, 09, and 12. |
 
 ## Context
 
